@@ -1,0 +1,27 @@
+/*
+=====================================================================
+
+RULES OF ABSTRACT CLASS
+
+1. Abstract Class ka object nahi ban sakta.
+
+2. Abstract Class ka reference ban sakta hai.
+
+3. Abstract Class me Constructor ho sakta hai.
+
+4. Abstract Class me Variables ho sakte hain.
+
+5. Abstract Class me Normal Methods ho sakte hain.
+
+6. Abstract Class me Static Methods ho sakti hain.
+
+7. Abstract Class me Final Methods ho sakti hain.
+
+8. Abstract Class me Abstract aur Normal dono methods ho sakte hain.
+
+9. Child Class ko Abstract Methods implement karne padte hain.
+
+10. Abstract Class Runtime Polymorphism support karti hai.
+
+=====================================================================
+*/

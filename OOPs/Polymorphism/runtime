@@ -1,0 +1,17 @@
+/*
+================= GOLDEN RULES OF RUNTIME POLYMORPHISM =================
+
+Rule 1:
+Compiler hamesha Reference Type (left side) ko dekhta hai aur wahi decide karta hai
+ki kaun se methods call karne ki permission hai.
+
+Rule 2:
+JVM (Runtime) hamesha Actual Object (right side) ko dekhta hai aur agar method
+override hua hai to Actual Object ka method call karta hai.
+
+Rule 3:
+Agar method override nahi hua hai, to Parent (Reference Type) ka inherited method
+hi execute hota hai.
+
+=======================================================================
+*/

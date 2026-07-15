@@ -1,0 +1,189 @@
+# 📘 Java OOP Master Mentor Notes (Android App Developer Edition)
+
+## Structure
+
+### Part 1 — Constructor
+
+* Constructor kya hai?
+* Constructor ki need
+* Constructor vs Method
+* Default Constructor
+* Parameterized Constructor
+* Constructor Memory Concept (Stack vs Heap)
+* Constructor Call Flow
+* Constructor Rules
+* Interview Questions
+* Professional Notes
+
+---
+
+### Part 2 — `this` Keyword
+
+* `this` kya hai?
+* Current Object Reference
+* `this.variable`
+* `this()`
+* Memory Concept
+* Interview Questions
+* Professional Notes
+
+---
+
+### Part 3 — Constructor Overloading
+
+* Definition
+* JVM Constructor Selection
+* Compile Time Resolution
+* Examples
+* Memory
+* Interview Notes
+
+---
+
+### Part 4 — Copy Constructor
+
+* Copy Constructor kya hai?
+* Object Copy kaise hoti hai?
+* Shallow Copy vs Deep Copy (Foundation)
+* Memory Diagram
+* Interview Notes
+
+---
+
+### Part 5 — Constructor Chaining
+
+* `this()`
+* `super()`
+* Constructor Call Order
+* Parent → Child Execution
+* JVM Flow
+* Interview Notes
+
+---
+
+### Part 6 — Inheritance
+
+* Why Inheritance?
+* IS-A Relationship
+* Types of Inheritance
+* Single
+* Multilevel
+* Hierarchical
+* Multiple (Java me direct support nahi)
+* Method Calling
+* Constructor Calling
+* Memory Diagram
+* Interview Notes
+
+---
+
+### Part 7 — `super` Keyword
+
+* `super()`
+* `super.variable`
+* `super.method()`
+* Constructor Calling Order
+* Parent Access
+* Interview Notes
+
+---
+
+### Part 8 — Encapsulation
+
+* What is Encapsulation?
+* Why Encapsulation?
+* Data Hiding
+* `private`
+* Getter
+* Setter
+* Validation in Setter
+* Read Only Class
+* Write Only Class
+* Immutable Class
+* Encapsulation vs Data Hiding
+* Android Examples
+* Best Practices
+* Interview Notes
+
+---
+
+### Part 9 — Runtime Polymorphism (Current Progress)
+
+* Method Overriding
+* Runtime Polymorphism
+* Upcasting
+* Reference Type
+* Actual Object
+* Dynamic Method Dispatch
+* Stack vs Heap
+* Compiler vs JVM
+* Golden Rules
+* Interview Notes
+
+---
+
+## Future Parts
+
+### Part 10 — Downcasting
+
+### Part 11 — Compile Time Polymorphism
+
+### Part 12 — Abstraction
+
+### Part 13 — Interface
+
+### Part 14 — Final / Static / Abstract
+
+### Part 15 — Object Class
+
+### Part 16 — Exception Handling
+
+### Part 17 — Collections
+
+### Part 18 — Multithreading
+
+### Part 19 — File Handling
+
+### Part 20 — OOP Interview Revision
+
+---
+
+## Goal
+
+Ye document sirf notes nahi hai.
+
+Iska purpose hai:
+
+* Java Foundation
+* Android App Development
+* OOP Mastery
+* Placement Preparation
+* Interview Revision
+* GitHub Documentation
+
+Har chapter me hum include karenge:
+
+✔ Definition
+
+✔ Why Java ne ye feature banaya?
+
+✔ JVM Internal Working
+
+✔ Stack vs Heap Memory
+
+✔ Real World Example
+
+✔ Android Example
+
+✔ Interview Questions
+
+✔ Best Practices
+
+✔ Professional Naming
+
+✔ Practice Programs
+
+✔ GitHub Ready Notes
+
+✔ Mentor Tips
+
