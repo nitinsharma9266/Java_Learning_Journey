@@ -68,4 +68,17 @@ public class Account {
     public boolean checkPin(String enteredPin) {
         return pin.equals(enteredPin);
     }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+    
+    @Override
+    public String toString() {
+        return accountNumber + "," +
+               accountHolderName + "," +
+               pin + "," +
+               balance + "," +
+               status;
+    }
 }

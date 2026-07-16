@@ -1,5 +1,6 @@
 package service;
-
+import util.FileUtil;
+import util.ValidationUtil;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,19 +12,37 @@ import java.util.Scanner;
 import model.Account;
 
 public class BankService {
-    Scanner sc = new Scanner(System.in);
+    private final Scanner sc = new Scanner(System.in);
+
+    private boolean isLoggedIn = false;
+
+    private String currentAccountNumber = null;
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
     public void createAccount() {
         
         
-        try {
+        try(BufferedReader br=new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))) {
     
-            System.out.print("Enter Your Account Number : ");
-            String accountNumber = sc.nextLine();
-            
+            String accountNumber;
+
+            while (true) {
+
+                System.out.print("Enter Account Number : ");
+                accountNumber = sc.nextLine();
+
+                if (ValidationUtil.isValidAccountNumber(accountNumber)) {
+                    break;
+                }
+
+                System.out.println("Invalid Account Number. Please try again.");
+            }
+
             System.out.println();
 
-            BufferedReader br = new BufferedReader(new FileReader("database/account.txt"));
-    
             String line;
             boolean accountExists = false;
     
@@ -37,45 +56,67 @@ public class BankService {
                 }
             }
     
-            br.close();
-    
             if (accountExists) {
                 System.out.println("Account Number Already Exists!");
                 return;
             }
     
-            System.out.print("Enter Account Holder Name : ");
-            String accountHolderName = sc.nextLine();
-            
+            String accountHolderName;
+
+            while (true) {
+
+                System.out.print("Enter Account Holder Name : ");
+                accountHolderName = sc.nextLine();
+
+                if (ValidationUtil.isValidName(accountHolderName)) {
+                    break;
+                }
+
+                System.out.println("Invalid Name. Please try again.");
+            }
             System.out.println();
 
-            System.out.print("Enter PIN : ");
-            String pin = sc.nextLine();
-            
-            System.out.println();
-            
-            System.out.print("Enter Opening Balance : ");
-            double balance = sc.nextDouble();
-            sc.nextLine();
-    
-            if (balance < 1000) {
-                System.out.println("Minimum Opening Balance should be 1000.");
-                return;
+            String pin;
+
+            while (true) {
+
+                System.out.print("Enter PIN : ");
+                pin = sc.nextLine();
+
+                if (ValidationUtil.isValidPin(pin)) {
+                    break;
+                }
+
+                System.out.println("PIN must be exactly 4 digits.");
             }
-    
+            System.out.println();
+
+            double balance;
+
+            while (true) {
+
+                System.out.print("Enter Opening Balance : ");
+                balance = sc.nextDouble();
+                sc.nextLine();
+
+                if (ValidationUtil.isValidOpeningBalance(balance)) {
+                    break;
+                }
+
+                System.out.println("Minimum Opening Balance is 1000.");
+            }
+
+            System.out.println();
+
             Account account = new Account(accountNumber, accountHolderName, pin, balance,"ACTIVE");
     
-            BufferedWriter bw = new BufferedWriter(new FileWriter("database/account.txt", true));
-    
-                bw.write(account.getAccountNumber() + "," +
-                account.getAccountHolderName() + "," +
-                pin + "," +
-                account.getBalance() + "," +
-                account.getStatus());
+            try(BufferedWriter bw = new BufferedWriter(new FileWriter(FileUtil.getAccountFilePath(), true))){
+
+            bw.write(account.toString());
 
             bw.newLine();
     
-            bw.close();
+            }
     
             System.out.println("Account Created Successfully.");
     
@@ -85,13 +126,11 @@ public class BankService {
     
         }
     }
+    
 
     public void viewAllAccounts() {
 
-        try {
-    
-            BufferedReader br = new BufferedReader(
-                    new FileReader("database/account.txt"));
+        try(BufferedReader br = new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))) {
     
             String line;
             boolean found = false;
@@ -120,8 +159,6 @@ public class BankService {
     
             }
     
-            br.close();
-    
             if (!found) {
                 System.out.println("No Accounts Found.");
             }
@@ -135,14 +172,25 @@ public class BankService {
 
     public void searchAccount() {
 
-        System.out.print("Enter Account Number : ");
-        String searchId = sc.nextLine().trim();
-    
+        String searchId;
+
+        while (true) {
+
+            System.out.print("Enter  Account Number to be search : ");
+            searchId = sc.nextLine();
+
+            if (ValidationUtil.isValidAccountNumber(searchId)) {
+                break;
+            }
+
+            System.out.println("Invalid Account Number. Please try again.");
+        }
+        System.out.println();
+
         boolean found = false;
     
-        try {
+        try(BufferedReader br = new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))) {
     
-            BufferedReader br = new BufferedReader(new FileReader("database/account.txt"));
     
             String line;
     
@@ -174,8 +222,6 @@ public class BankService {
     
             }
     
-            br.close();
-    
             if (!found) {
                 System.out.println("Account Not Found.");
             }
@@ -187,12 +233,28 @@ public class BankService {
         }
     }
 
-    public boolean LoginAccount(){
-        System.out.print("Enter Your Account Number : ");
-        String accountNumber=sc.nextLine();
+    public boolean loginAccount(){
+
+        if (isLoggedIn) {
+            System.out.println("Already logged in.");
+            return true;
+        }
+        String accountNumber;
+
+        while (true) {
+
+            System.out.print("Enter Account Number : ");
+            accountNumber = sc.nextLine();
+
+            if (ValidationUtil.isValidAccountNumber(accountNumber)) {
+                break;
+            }
+
+            System.out.println("Invalid Account Number. Please try again.");
+        }
         System.out.println();
 
-        try(BufferedReader br=new BufferedReader(new FileReader("database/account.txt"))){
+        try(BufferedReader br=new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))){
             
             String line;
             boolean accountExists=false;
@@ -200,7 +262,6 @@ public class BankService {
                 String[] parts=line.split(",");
                 if(parts[0].trim().equals(accountNumber.trim())){
                     accountExists = true;
-                    currentAccountNumber = accountNumber;
 
                     if(parts[4].trim().equals("ACTIVE")){
                         Account account = new Account(
@@ -211,13 +272,28 @@ public class BankService {
                             parts[4]);
                         int attempts = 3;
                         while (attempts > 0){
-                            System.out.print("Enter Pin : ");
-                            String pin=sc.nextLine();
+                            String pin;
+
+                            while (true) {
+
+                                System.out.print("Enter PIN : ");
+                                pin = sc.nextLine();
+
+                                if (ValidationUtil.isValidPin(pin)) {
+                                    break;
+                                }
+
+                                System.out.println("PIN must be exactly 4 digits.");
+                            }
                             System.out.println();
                             
                             if (account.checkPin(pin)) {
 
-                                System.out.println("Pin is correct!");
+                                isLoggedIn = true;
+
+                                currentAccountNumber = account.getAccountNumber();
+
+                                System.out.println("Welcome, "+account.getAccountHolderName());
                                 System.out.println("Login successfully..");
                                 return true;
                                 
@@ -249,25 +325,33 @@ public class BankService {
         { System.out.println("Unable to login."); 
         return false; } return false; 
     }
-    private String currentAccountNumber;
-    public void Deposit(){ 
-        
+
+    
+    public void deposit(){ 
+        double updatedBalance = 0;
         boolean found = false; 
-        if (!LoginAccount()) { 
-            return; 
-        } 
+        if (!isLoggedIn) {
+            System.out.println("Please login first.");
+            return;
+        }
         else{ 
-            try(BufferedReader br=new BufferedReader(new FileReader("database/account.txt"))){  
+            try(BufferedReader br=new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))){  
                 StringBuilder data=new StringBuilder(); 
 
-                System.out.println("Enter Deposite Balance : "); 
-                double Deposite=sc.nextDouble(); 
-                sc.nextLine();
-                
-                if (Deposite <= 0) { 
-                System.out.println("Invalid Deposit Amount."); 
-                return; 
-                } 
+                double depositAmount;
+
+                while (true) {
+
+                    System.out.print("Enter Deposit Amount : ");
+                    depositAmount = sc.nextDouble();
+                    sc.nextLine();
+
+                    if (ValidationUtil.isValidDeposit(depositAmount)) {
+                        break;
+                    }
+
+                    System.out.println("Invalid Deposit Amount.");
+                }
                 String line; 
                 while((line=br.readLine())!=null){ 
 
@@ -279,28 +363,29 @@ public class BankService {
                         
                         double balance = Double.parseDouble(parts[3]);
                         
-                        balance=balance+Deposite; 
+                        balance=balance+depositAmount;
+                        updatedBalance =balance; 
 
                         line = parts[0] + "," +
                             parts[1] + "," +
                             parts[2] + "," +
                             balance + "," +
                             parts[4];
-                        System.out.println("Updated record : "+line); 
+                         
                     } 
                     data.append(line).append("\n"); 
                 } 
                 
                 // Ab puri file dobara likhi gayi 
-                try (BufferedWriter wr = new BufferedWriter(
-                    new FileWriter("database/account.txt"))) {
+                try (BufferedWriter wr = new BufferedWriter(new FileWriter(FileUtil.getAccountFilePath()))) {
             
                 wr.write(data.toString());
             
                 }
 
                 if(found){
-                    System.out.println("Account Updated Successfully.");
+                    System.out.println("Deposit Successful.");
+                    System.out.println("Current balance : "+updatedBalance);
                 }
                 else{
                     System.out.println("Account Not Found.");
@@ -312,22 +397,31 @@ public class BankService {
         } 
     }
     public void withdraw(){
+        double updatedBalance = 0;
+
         boolean found = false; 
-        if (!LoginAccount()) { 
-            return; 
-        } 
+        if (!isLoggedIn){
+            System.out.println("Please login first.");
+            return;
+        }
         else{ 
-            try(BufferedReader br=new BufferedReader(new FileReader("database/account.txt"))){  
+            try(BufferedReader br=new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))){  
                 StringBuilder data=new StringBuilder(); 
 
-                System.out.print("Enter Withdraw Amount : ");
-                int withdrawAmount=sc.nextInt(); 
-                sc.nextLine();
-                
-                if (withdrawAmount <= 0) { 
-                System.out.println("Invalid withdraw Amount."); 
-                return; 
-                } 
+                double withdrawAmount;
+
+                while (true) {
+
+                    System.out.print("Enter Withdraw Amount : ");
+                    withdrawAmount = sc.nextDouble();
+                    sc.nextLine();
+
+                    if (ValidationUtil.isValidWithdraw(withdrawAmount)) {
+                        break;
+                    }
+
+                    System.out.println("Invalid Withdraw Amount.");
+                }
                 String line; 
                 while((line=br.readLine())!=null){ 
 
@@ -341,6 +435,7 @@ public class BankService {
                         
                         if (balance >= withdrawAmount) {
                             balance = balance - withdrawAmount;
+                            updatedBalance=balance;
                         }
                         else {
                             System.out.println("Insufficient Balance.");
@@ -352,44 +447,49 @@ public class BankService {
                             parts[2] + "," +
                             balance + "," +
                             parts[4];
-                        System.out.println("Updated record : "+line); 
-                    } 
+                        
                     data.append(line).append("\n"); 
                 } 
                 
                 // Ab puri file dobara likhi gayi 
                 try (BufferedWriter wr = new BufferedWriter(
-                    new FileWriter("database/account.txt"))) {
+                    new FileWriter(FileUtil.getAccountFilePath()))) {
             
                 wr.write(data.toString());
             
                 }
 
                 if(found){
-                    System.out.println("Amount Withdraw Successfully.");
+                    System.out.println("Withdraw Successful.");
+                    System.out.println("Remaining Balance : ₹" + updatedBalance);
                 }
                 else{
                     System.out.println("Account Not Found.");
                 }
-            } 
+            
+                }
+            }
             catch(Exception e){ 
                 System.out.println(e.getMessage()); 
             } 
         } 
     
     }
+
     public void checkBalance(){
-        if (!LoginAccount()) {
+        if(!isLoggedIn){
+            System.out.println("Please login first.");
             return;
         }
-        try( BufferedReader br = new BufferedReader(new FileReader("database/account.txt"))){
+        try( BufferedReader br = new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))){
             
             String line;
             boolean found = false;
             while((line = br.readLine()) != null){
-                found=true;
+                
                 String[] parts = line.split(",");
                 if(parts[0].trim().equals(currentAccountNumber.trim())){
+                    found=true;
                     System.out.println("----------------");
                     System.out.println("Account Number : "+parts[0]);
                     System.out.println("Account Holder Name : "+parts[1]);
@@ -411,28 +511,43 @@ public class BankService {
         
     }
 
-    public void ChangePIN(){
+    public void changePIN(){
 
-        if (!LoginAccount()) {
+        if (!isLoggedIn) {
+            System.out.println("Please login first.");
             return;
         }
+        String newPin;
 
-        System.out.print("Enter New Pin : ");
-        String newPin=sc.nextLine();
+        while (true) {
+
+            System.out.print("Enter New PIN : ");
+            newPin = sc.nextLine();
+
+            if (ValidationUtil.isValidPin(newPin)) {
+                break;
+            }
+
+            System.out.println("PIN must be exactly 4 digits. Please try again.");
+        }
 
         System.out.println();
 
-        System.out.print("Enter new Pin : ");
-        String confirmPin=sc.nextLine();
+        String confirmPin;
 
-        System.out.println();
+        while (true) {
 
-        if(!newPin.equals(confirmPin)){
-            System.out.println("Pin Mismatch !");
-            return;
+            System.out.print("Confirm New PIN : ");
+            confirmPin = sc.nextLine();
+
+            if (newPin.equals(confirmPin)) {
+                break;
+            }
+
+            System.out.println("PIN Mismatch! Please enter the same PIN again.");
         }
 
-        try(BufferedReader br=new BufferedReader(new FileReader("database/account.txt"))){
+        try(BufferedReader br=new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))){
             
             StringBuilder data=new StringBuilder();
             
@@ -448,12 +563,12 @@ public class BankService {
                         newPin + "," +
                         parts[3] + "," +
                         parts[4];
-                    System.out.println("Update record : "+line);
+                    
                 }
                 data.append(line).append("\n");
             }
 
-            try (BufferedWriter wr = new BufferedWriter(new FileWriter("database/account.txt"))) {
+            try (BufferedWriter wr = new BufferedWriter(new FileWriter(FileUtil.getAccountFilePath()))) {
         
             wr.write(data.toString());
         
@@ -470,9 +585,10 @@ public class BankService {
 
     }
 
-    public void DeactivateAccount(){
+    public void deactivateAccount(){
         
-        if (!LoginAccount()) {
+        if (!isLoggedIn) {
+            System.out.println("Please login first.");
             return;
         }
         System.out.print("Are you sure you want to deactivate your account? (Y/N): ");
@@ -485,7 +601,7 @@ public class BankService {
 
         System.out.println();
 
-        try(BufferedReader br=new BufferedReader(new FileReader("database/account.txt"))){
+        try(BufferedReader br=new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))){
             
             StringBuilder data=new StringBuilder();
             
@@ -501,18 +617,20 @@ public class BankService {
                         parts[2]+ "," +
                         parts[3] + "," +
                         "INACTIVE";
-                    System.out.println("Update record : "+line);
+                    
                 }
                 data.append(line).append("\n");
             }
 
-            try (BufferedWriter wr = new BufferedWriter(new FileWriter("database/account.txt"))) {
+            try (BufferedWriter wr = new BufferedWriter(new FileWriter(FileUtil.getAccountFilePath()))) {
         
             wr.write(data.toString());
         
             }
             if(found){
                 System.out.println("Account Deactivated Successfully.");
+                isLoggedIn = false;
+                currentAccountNumber = null;
             }
             else{
                 System.out.println("Account Not Found.");
@@ -526,21 +644,43 @@ public class BankService {
     }
 
     public void activateAccount(){
-        System.out.print("Enter Account Number : ");
-        String accountNumber=sc.nextLine();
+    
+        String accountNumber;
+
+        while (true) {
+
+            System.out.print("Enter Account Number : ");
+            accountNumber = sc.nextLine();
+
+            if (ValidationUtil.isValidAccountNumber(accountNumber)) {
+                break;
+            }
+
+            System.out.println("Invalid Account Number. Please try again.");
+        }
         System.out.println();
 
-        System.out.println("Enter Pin : ");
-        String Pin=sc.nextLine();
+        String pin;
 
-        try(BufferedReader br=new BufferedReader(new FileReader("database/account.txt"))){
+        while (true) {
+
+            System.out.print("Enter New PIN : ");
+            pin = sc.nextLine();
+
+            if (ValidationUtil.isValidPin(pin)) {
+                break;
+            }
+
+            System.out.println("PIN must be exactly 4 digits. Please try again.");
+        }
+        try(BufferedReader br=new BufferedReader(new FileReader(FileUtil.getAccountFilePath()))){
             
             StringBuilder data =new StringBuilder();
             String line;
             boolean found=false;
             while ((line=br.readLine())!=null) {
                 String[] parts=line.split(",");
-                if(parts[0].trim().equals(accountNumber.trim()) && parts[2].trim().equals(Pin.trim()) && parts[4].trim().equals("INACTIVE")){
+                if(parts[0].trim().equals(accountNumber.trim()) && parts[2].trim().equals(pin.trim()) && parts[4].trim().equals("INACTIVE")){
                     found=true;
                     line = parts[0] + "," +
                         parts[1] + "," +
@@ -552,7 +692,7 @@ public class BankService {
             
             }
             
-            try(BufferedWriter wr=new BufferedWriter(new FileWriter("database/account.txt"))){
+            try(BufferedWriter wr=new BufferedWriter(new FileWriter(FileUtil.getAccountFilePath()))){
                 wr.write(data.toString());
             }
             if(found){
@@ -571,12 +711,13 @@ public class BankService {
     }
     public void deleteAccount(){
 
-        if (!LoginAccount()) {
+        if (!isLoggedIn) {
+            System.out.println("Please login first.");
             return;
         }
         
         try(
-            BufferedReader br = new BufferedReader(new FileReader("database/account.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(FileUtil.getAccountFilePath()));
             BufferedWriter wr = new BufferedWriter(new FileWriter("temp.txt"))
         )
         {
@@ -589,13 +730,13 @@ public class BankService {
                 return;
             }
 
-            boolean Found=false;
+            boolean found=false;
             String line;
 
             while((line=br.readLine())!=null){
                 String[] parts=line.split(",");
                 if(parts[0].trim().equals(currentAccountNumber.trim())){
-                    Found=true;
+                    found=true;
                     continue;
                 }
                 wr.write(line);
@@ -603,7 +744,7 @@ public class BankService {
                 
             }
             
-            File oldFile=new File("database/account.txt");
+            File oldFile=new File(FileUtil.getAccountFilePath());
             File tempFile=new File("temp.txt");
 
             if(oldFile.delete()){
@@ -612,8 +753,10 @@ public class BankService {
                 }
             }
 
-            if (Found) {
+            if (found) {
                 System.out.println("Account Deleted Successfully");
+                isLoggedIn = false;
+                currentAccountNumber = null;
             }
             else{
                 System.out.println("Account Not Found");
@@ -625,6 +768,33 @@ public class BankService {
             System.out.println(e.getMessage());
         }
         
+    }
+
+    public void logout() {
+
+        isLoggedIn = false;
+    
+        currentAccountNumber = null;
+    
+        System.out.println("Logged Out Successfully.");
+    
+    }
+
+    public void exitApplication() {
+
+        if (isLoggedIn) {
+            logout();
+        }
+    
+        System.out.println();
+        System.out.println("====================================");
+        System.out.println(" Thank You for Using Our Bank System");
+        System.out.println("====================================");
+        System.out.println("Exiting Application...");
+        System.out.println();
+    
+        sc.close();
+        System.exit(0);
     }
 }
 

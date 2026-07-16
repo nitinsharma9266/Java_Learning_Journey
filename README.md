@@ -1,1 +1,1 @@
-# Console_java_project
+# Java_Learning_Journey
