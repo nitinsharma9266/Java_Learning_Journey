@@ -1,0 +1,12 @@
+# Ignore database folder
+Bank_Management_System/database/
+
+# Ignore compiled Java files
+*.class
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore build folders
+bin/
+out/
