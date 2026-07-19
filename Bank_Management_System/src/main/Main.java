@@ -22,20 +22,20 @@ public class Main {
                 System.out.println("3. Search Account");
                 System.out.println("4. Login");
                 System.out.println("5. Activate Account");
-                System.out.println("6. Exit");
+                System.out.println("If you want to exit then press 13.");
                 System.out.println("--------------------------------------------");
         
             } else {
         
                 System.out.println("\n========== CUSTOMER MENU ==========");
-                System.out.println("1. Deposit");
-                System.out.println("2. Withdraw");
-                System.out.println("3. Check Balance");
-                System.out.println("4. Change PIN");
-                System.out.println("5. Deactivate Account");
-                System.out.println("6. Delete Account");
-                System.out.println("7. Logout");
-                System.out.println("8. Exit");
+                System.out.println("6. Deposit");
+                System.out.println("7. Withdraw");
+                System.out.println("8. Check Balance");
+                System.out.println("9. Change PIN");
+                System.out.println("10. Deactivate Account");
+                System.out.println("11. Delete Account");
+                System.out.println("12. Logout");
+                System.out.println("13. Exit");
                 System.out.println("-----------------------------------");
         
             }
@@ -62,29 +62,26 @@ public class Main {
                 case 4:
                     bank.loginAccount();
                     break;
-            
                 case 5:
+                    bank.activateAccount();
+                    break;
+                case 6:
                     bank.deposit();
                     break;
-            
-                case 6:
+                case 7:
                     bank.withdraw();
                     break;
             
-                case 7:
+                case 8:
                     bank.checkBalance();
                     break;
             
-                case 8:
+                case 9:
                     bank.changePIN();
                     break;
             
-                case 9:
-                    bank.deactivateAccount();
-                    break;
-            
                 case 10:
-                    bank.activateAccount();
+                    bank.deactivateAccount();
                     break;
             
                 case 11:
