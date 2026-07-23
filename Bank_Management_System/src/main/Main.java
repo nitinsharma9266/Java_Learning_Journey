@@ -101,7 +101,7 @@ public class Main {
             }
             System.out.println();
         }
-        while (choice != 6 && choice != 8);
+        while (choice != 13);
 
         sc.close();
         
